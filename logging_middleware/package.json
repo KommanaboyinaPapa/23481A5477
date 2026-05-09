@@ -1,0 +1,12 @@
+{
+    "name": "logging-middleware",
+    "version": "1.0.0",
+    "description": "Reusable logging middleware for the campus notifications platform. Sends structured logs to the evaluation-service API.",
+    "main": "index.js",
+    "scripts": {
+        "test": "node index.js"
+    },
+    "dependencies": {
+        "axios": "^1.7.0"
+    }
+}
