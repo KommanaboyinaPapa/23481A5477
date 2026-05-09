@@ -1,8 +1,3 @@
-/**
- * LoadingState Component
- * Skeleton loader for notification lists
- */
-
 import React from 'react';
 import { Box, Skeleton, Card, CardContent } from '@mui/material';
 

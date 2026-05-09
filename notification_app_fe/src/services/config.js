@@ -1,10 +1,4 @@
-/**
- * API Configuration
- * Central configuration for all API endpoints and authentication
- */
-
 const API_CONFIG = {
-    // Proxied via setupProxy.js in dev; set full URL for production
     BASE_URL: '',
 
     ENDPOINTS: {

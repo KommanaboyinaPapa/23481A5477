@@ -1,22 +1,9 @@
-/**
- * Auth Service
- * Manages bearer token lifecycle — fetch, cache, and auto-refresh
- * before the 30-minute expiry window.
- */
-
 const axios = require('axios');
 const CONFIG = require('./config');
 
 let cachedToken = null;
 let tokenExpiresAt = 0;
 
-/**
- * Returns a valid bearer token.
- * If the cached token is still valid (with a 2-min buffer), returns it.
- * Otherwise, fetches a fresh token from the auth endpoint.
- *
- * @returns {Promise<string>} Bearer token string
- */
 async function getToken() {
     const now = Date.now();
 
@@ -31,8 +18,6 @@ async function getToken() {
         });
 
         const data = response.data;
-
-        // The API may return the token in different fields — handle common patterns
         const token =
             data.access_token ||
             data.token ||
@@ -59,9 +44,6 @@ async function getToken() {
     }
 }
 
-/**
- * Clears the cached token, forcing a refresh on the next call.
- */
 function clearToken() {
     cachedToken = null;
     tokenExpiresAt = 0;

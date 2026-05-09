@@ -1,8 +1,3 @@
-/**
- * Navbar Component
- * Top navigation bar with page links and branding
- */
-
 import React from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import {
@@ -115,7 +110,6 @@ export default function Navbar() {
                 </Toolbar>
             </AppBar>
 
-            {/* Mobile Drawer */}
             <Drawer
                 anchor="left"
                 open={drawerOpen}
@@ -130,7 +124,7 @@ export default function Navbar() {
             >
                 <Box sx={{ p: 2, borderBottom: '1px solid rgba(255,255,255,0.08)' }}>
                     <Typography variant="h6" sx={{ fontWeight: 700, color: '#7c4dff' }}>
-                        📚 Campus Notifs
+                        Campus Notifs
                     </Typography>
                 </Box>
                 <List>

@@ -1,8 +1,3 @@
-/**
- * ErrorState Component
- * Displays error messages with retry option
- */
-
 import React from 'react';
 import { Typography, Button, Paper } from '@mui/material';
 import { ErrorOutline as ErrorIcon, Refresh as RefreshIcon } from '@mui/icons-material';

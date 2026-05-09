@@ -1,14 +1,5 @@
-/**
- * Helper Utilities
- */
-
 import { VIEWED_STORAGE_KEY } from './constants';
 
-/**
- * Formats a timestamp string into a human-readable relative time.
- * @param {string} timestamp
- * @returns {string}
- */
 export function formatRelativeTime(timestamp) {
     const date = new Date(timestamp);
     const now = new Date();
@@ -25,11 +16,6 @@ export function formatRelativeTime(timestamp) {
     return 'Just now';
 }
 
-/**
- * Formats a timestamp into a full date-time string.
- * @param {string} timestamp
- * @returns {string}
- */
 export function formatDateTime(timestamp) {
     const date = new Date(timestamp);
     return date.toLocaleString('en-IN', {
@@ -41,10 +27,6 @@ export function formatDateTime(timestamp) {
     });
 }
 
-/**
- * Gets the set of viewed notification IDs from localStorage.
- * @returns {Set<string>}
- */
 export function getViewedIds() {
     try {
         const stored = localStorage.getItem(VIEWED_STORAGE_KEY);
@@ -54,31 +36,18 @@ export function getViewedIds() {
     }
 }
 
-/**
- * Marks a notification ID as viewed.
- * @param {string} id
- */
 export function markAsViewed(id) {
     const viewed = getViewedIds();
     viewed.add(id);
     localStorage.setItem(VIEWED_STORAGE_KEY, JSON.stringify([...viewed]));
 }
 
-/**
- * Marks multiple notification IDs as viewed.
- * @param {string[]} ids
- */
 export function markAllAsViewed(ids) {
     const viewed = getViewedIds();
     ids.forEach((id) => viewed.add(id));
     localStorage.setItem(VIEWED_STORAGE_KEY, JSON.stringify([...viewed]));
 }
 
-/**
- * Checks if a notification has been viewed.
- * @param {string} id
- * @returns {boolean}
- */
 export function isViewed(id) {
     return getViewedIds().has(id);
 }

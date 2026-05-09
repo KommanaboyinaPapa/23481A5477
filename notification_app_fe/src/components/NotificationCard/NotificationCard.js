@@ -1,8 +1,3 @@
-/**
- * NotificationCard Component
- * Displays a single notification with type badge, viewed state, and metadata
- */
-
 import React from 'react';
 import {
     Card,
@@ -63,7 +58,6 @@ export default function NotificationCard({ notification, showRank = false }) {
                 },
             }}
         >
-            {/* New badge */}
             {!viewed && (
                 <Box
                     sx={{
@@ -95,7 +89,6 @@ export default function NotificationCard({ notification, showRank = false }) {
 
             <CardContent sx={{ p: { xs: 1.5, sm: 2 }, '&:last-child': { pb: { xs: 1.5, sm: 2 } } }}>
                 <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 1.5 }}>
-                    {/* Rank badge (for priority view) */}
                     {showRank && notification.rank && (
                         <Box
                             sx={{
@@ -117,7 +110,6 @@ export default function NotificationCard({ notification, showRank = false }) {
                         </Box>
                     )}
 
-                    {/* Type icon */}
                     <Box
                         sx={{
                             width: 40,
@@ -134,7 +126,6 @@ export default function NotificationCard({ notification, showRank = false }) {
                         {ICONS[notification.Type] || ICONS.Event}
                     </Box>
 
-                    {/* Content */}
                     <Box sx={{ flex: 1, minWidth: 0 }}>
                         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 0.5, flexWrap: 'wrap' }}>
                             <Chip
@@ -177,7 +168,6 @@ export default function NotificationCard({ notification, showRank = false }) {
                         </Typography>
                     </Box>
 
-                    {/* Mark as viewed */}
                     {!viewed && (
                         <Tooltip title="Mark as viewed" arrow>
                             <IconButton

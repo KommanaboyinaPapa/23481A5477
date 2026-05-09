@@ -1,19 +1,8 @@
-/**
- * Notification Service
- * API client for the notifications endpoint with pagination & filtering
- */
-
 import axios from 'axios';
 import API_CONFIG from './config';
 import { getToken, clearToken } from './authService';
 import { Log } from '../middleware/loggingMiddleware';
 
-/**
- * Fetches notifications from the API.
- *
- * @param {object} params - { limit, page, notification_type }
- * @returns {Promise<object>} { notifications: [...] }
- */
 export async function fetchNotifications(params = {}) {
     const url = `${API_CONFIG.BASE_URL}${API_CONFIG.ENDPOINTS.NOTIFICATIONS}`;
 
@@ -40,7 +29,6 @@ export async function fetchNotifications(params = {}) {
 
         return notifications;
     } catch (error) {
-        // Retry on auth failure
         if (error.response && (error.response.status === 401 || error.response.status === 403)) {
             clearToken();
             await Log('frontend', 'warn', 'api', 'Token expired, refreshing and retrying notification fetch');

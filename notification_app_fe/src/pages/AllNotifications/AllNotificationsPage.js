@@ -1,8 +1,3 @@
-/**
- * All Notifications Page
- * Displays paginated notifications with type filtering
- */
-
 import React, { useState, useEffect } from 'react';
 import {
     Box,
@@ -64,12 +59,10 @@ export default function AllNotificationsPage() {
         Log('frontend', 'info', 'page', `Marked ${ids.length} notifications as viewed`);
     };
 
-    // Estimate total pages (since API doesn't return total count)
     const estimatedPages = hasMore ? page + 1 : page;
 
     return (
         <Container maxWidth="md" sx={{ py: { xs: 2, sm: 4 } }}>
-            {/* Header */}
             <Box sx={{ mb: 3 }}>
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, mb: 1, flexWrap: 'wrap' }}>
                     <NotifIcon sx={{ color: '#7c4dff', fontSize: 32 }} />
@@ -103,7 +96,6 @@ export default function AllNotificationsPage() {
                 </Typography>
             </Box>
 
-            {/* Controls */}
             <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: 1, mb: 1 }}>
                 <FilterBar activeFilter={filterType} onFilterChange={handleFilterChange} />
                 {notifications.length > 0 && (
@@ -123,7 +115,6 @@ export default function AllNotificationsPage() {
                 )}
             </Box>
 
-            {/* Content */}
             {loading ? (
                 <LoadingState count={6} />
             ) : error ? (
@@ -145,7 +136,6 @@ export default function AllNotificationsPage() {
                         ))}
                     </Box>
 
-                    {/* Pagination */}
                     <Box sx={{ display: 'flex', justifyContent: 'center', mt: 3 }}>
                         <Pagination
                             count={estimatedPages}

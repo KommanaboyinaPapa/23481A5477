@@ -1,8 +1,3 @@
-/**
- * Priority Inbox Page
- * Displays top-N most important notifications with configurable N and type filter
- */
-
 import React, { useState, useEffect } from 'react';
 import {
     Box,
@@ -53,7 +48,6 @@ export default function PriorityInboxPage() {
         Log('frontend', 'info', 'page', `Priority filter changed to: ${type || 'all'}`);
     };
 
-    // Stats
     const stats = {
         total: allNotifications.length,
         placement: allNotifications.filter((n) => n.Type === 'Placement').length,
@@ -63,7 +57,6 @@ export default function PriorityInboxPage() {
 
     return (
         <Container maxWidth="md" sx={{ py: { xs: 2, sm: 4 } }}>
-            {/* Header */}
             <Box sx={{ mb: 3 }}>
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, mb: 1 }}>
                     <PriorityIcon sx={{ color: '#ff6b6b', fontSize: 32 }} />
@@ -85,7 +78,6 @@ export default function PriorityInboxPage() {
                 </Typography>
             </Box>
 
-            {/* Stats Cards */}
             {!loading && !error && (
                 <Grid container spacing={1.5} sx={{ mb: 3 }}>
                     {[
@@ -118,7 +110,6 @@ export default function PriorityInboxPage() {
                 </Grid>
             )}
 
-            {/* Controls */}
             <Box
                 sx={{
                     display: 'flex',
@@ -180,7 +171,6 @@ export default function PriorityInboxPage() {
                 </Box>
             </Box>
 
-            {/* Priority label */}
             {!loading && !error && priorityNotifications.length > 0 && (
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
                     <Chip
@@ -201,7 +191,6 @@ export default function PriorityInboxPage() {
                 </Box>
             )}
 
-            {/* Content */}
             {loading ? (
                 <LoadingState count={Math.min(topN, 8)} />
             ) : error ? (

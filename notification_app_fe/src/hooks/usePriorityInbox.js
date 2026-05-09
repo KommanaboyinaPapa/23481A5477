@@ -1,8 +1,3 @@
-/**
- * usePriorityInbox Hook
- * Fetches all notifications and computes the top-N priority inbox
- */
-
 import { useState, useEffect, useCallback } from 'react';
 import { fetchNotifications } from '../services/notificationService';
 import { getTopNNotifications } from '../utils/priorityAlgorithm';
@@ -21,22 +16,19 @@ export function usePriorityInbox({ topN = 10, filterType = '' } = {}) {
         try {
             await Log('frontend', 'info', 'hook', `usePriorityInbox: computing top ${topN}, filter=${filterType || 'all'}`);
 
-            // Fetch multiple pages to gather enough data for priority ranking (API max limit is 10)
             let allData = [];
             for (let pg = 1; pg <= 5; pg++) {
                 const pageData = await fetchNotifications({ limit: 10, page: pg });
                 allData = allData.concat(pageData);
-                if (pageData.length < 10) break; // No more pages
+                if (pageData.length < 10) break;
             }
             setAllNotifications(allData);
 
-            // Apply type filter if specified
             let filtered = allData;
             if (filterType) {
                 filtered = allData.filter((n) => n.Type === filterType);
             }
 
-            // Compute top-N
             const topNotifs = getTopNNotifications(filtered, topN);
             setPriorityNotifications(topNotifs);
 

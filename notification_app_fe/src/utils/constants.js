@@ -1,7 +1,3 @@
-/**
- * Application Constants
- */
-
 export const NOTIFICATION_TYPES = ['Event', 'Result', 'Placement'];
 
 export const TOP_N_OPTIONS = [10, 15, 20, 25, 50];

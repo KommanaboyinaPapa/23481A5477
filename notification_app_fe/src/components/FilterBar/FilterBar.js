@@ -1,8 +1,3 @@
-/**
- * FilterBar Component
- * Provides notification type filtering and display controls
- */
-
 import React from 'react';
 import {
     Box,

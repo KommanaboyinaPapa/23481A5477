@@ -1,8 +1,3 @@
-/**
- * useNotifications Hook
- * Fetches notifications with pagination and filtering
- */
-
 import { useState, useEffect, useCallback } from 'react';
 import { fetchNotifications } from '../services/notificationService';
 import { Log } from '../middleware/loggingMiddleware';

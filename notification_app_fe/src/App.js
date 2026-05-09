@@ -1,8 +1,3 @@
-/**
- * App — Root Application Component
- * Sets up MUI theme, routing, and context providers
- */
-
 import React from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { ThemeProvider, createTheme, CssBaseline } from '@mui/material';
@@ -12,7 +7,6 @@ import AllNotificationsPage from './pages/AllNotifications/AllNotificationsPage'
 import PriorityInboxPage from './pages/PriorityInbox/PriorityInboxPage';
 import { Log } from './middleware/loggingMiddleware';
 
-// Custom dark theme with premium aesthetics
 const theme = createTheme({
     palette: {
         mode: 'dark',

@@ -1,9 +1,3 @@
-/**
- * CRA Proxy Configuration
- * Routes API calls through the dev server to bypass CORS restrictions.
- * See: https://create-react-app.dev/docs/proxying-api-requests-in-development/
- */
-
 const { createProxyMiddleware } = require('http-proxy-middleware');
 
 module.exports = function (app) {

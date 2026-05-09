@@ -1,8 +1,3 @@
-/**
- * Notification Context
- * Global state management for notifications, viewed tracking, and auth
- */
-
 import React, { createContext, useContext, useState, useCallback, useEffect } from 'react';
 import { getViewedIds, markAsViewed as markViewedHelper, markAllAsViewed as markAllViewedHelper } from '../utils/helpers';
 import { Log } from '../middleware/loggingMiddleware';
