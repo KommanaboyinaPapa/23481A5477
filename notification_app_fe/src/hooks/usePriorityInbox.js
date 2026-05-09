@@ -21,14 +21,19 @@ export function usePriorityInbox({ topN = 10, filterType = '' } = {}) {
         try {
             await Log('frontend', 'info', 'hook', `usePriorityInbox: computing top ${topN}, filter=${filterType || 'all'}`);
 
-            // Fetch a larger set to have enough data for priority calculation
-            const data = await fetchNotifications({ limit: 100, page: 1 });
-            setAllNotifications(data);
+            // Fetch multiple pages to gather enough data for priority ranking (API max limit is 10)
+            let allData = [];
+            for (let pg = 1; pg <= 5; pg++) {
+                const pageData = await fetchNotifications({ limit: 10, page: pg });
+                allData = allData.concat(pageData);
+                if (pageData.length < 10) break; // No more pages
+            }
+            setAllNotifications(allData);
 
             // Apply type filter if specified
-            let filtered = data;
+            let filtered = allData;
             if (filterType) {
-                filtered = data.filter((n) => n.Type === filterType);
+                filtered = allData.filter((n) => n.Type === filterType);
             }
 
             // Compute top-N

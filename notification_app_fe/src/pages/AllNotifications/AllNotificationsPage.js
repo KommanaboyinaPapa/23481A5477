@@ -26,7 +26,7 @@ import LoadingState from '../../components/LoadingState/LoadingState';
 import ErrorState from '../../components/ErrorState/ErrorState';
 import { Log } from '../../middleware/loggingMiddleware';
 
-const ITEMS_PER_PAGE = 20;
+const ITEMS_PER_PAGE = 10;
 
 export default function AllNotificationsPage() {
     const [page, setPage] = useState(1);

@@ -7,7 +7,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { fetchNotifications } from '../services/notificationService';
 import { Log } from '../middleware/loggingMiddleware';
 
-export function useNotifications({ page = 1, limit = 20, notificationType = '' } = {}) {
+export function useNotifications({ page = 1, limit = 10, notificationType = '' } = {}) {
     const [notifications, setNotifications] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);

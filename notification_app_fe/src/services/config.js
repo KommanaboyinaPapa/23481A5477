@@ -4,12 +4,13 @@
  */
 
 const API_CONFIG = {
-    BASE_URL: 'http://4.224.186.213/evaluation-service',
+    // Proxied via setupProxy.js in dev; set full URL for production
+    BASE_URL: '',
 
     ENDPOINTS: {
-        AUTH: '/auth',
-        LOGS: '/logs',
-        NOTIFICATIONS: '/notifications',
+        AUTH: '/evaluation-service/auth',
+        LOGS: '/evaluation-service/logs',
+        NOTIFICATIONS: '/evaluation-service/notifications',
     },
 
     AUTH_CREDENTIALS: {
