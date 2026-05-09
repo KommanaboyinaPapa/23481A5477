@@ -2,114 +2,82 @@
 
 ## Stage 1
 
-### Problem Statement
+### The Problem
 
-Users of the campus notification platform lose track of important notifications due to high volume. We need a **Priority Inbox** that surfaces the top **N** most critical unread notifications (where N is user-configurable: 10, 15, 20, etc.) based on a combination of **type weight** and **recency**.
+So the main issue we're dealing with here is that students on the campus notification platform are getting flooded with notifications — placements, results, events — and the important stuff just gets buried. The product manager wants us to build a Priority Inbox that shows the top N most important unread notifications first, where N can be chosen by the user (like top 10, 15, 20 etc).
 
----
+### How I Approached It
 
-### Approach
+The first thing I had to figure out was — how do you decide which notification is "more important" than another? There are two things that matter here:
 
-#### 1. Weighted Priority Scoring
+1. **What type of notification is it?** A placement notification is obviously more urgent than a random event update. So I gave each type a weight:
+   - Placement = 3 (highest priority)
+   - Result = 2
+   - Event = 1
 
-Each notification is assigned a **composite score** that combines two factors:
+2. **How recent is it?** Between two placement notifications, the newer one should show up first. So I calculate a recency score based on how old the notification is — newer ones get a higher score.
 
-| Factor | Description | Implementation |
-|--------|------------|---------------|
-| **Type Weight** | Placement notifications are most critical, followed by Results, then Events | `Placement = 3`, `Result = 2`, `Event = 1` |
-| **Recency** | Newer notifications should rank higher among the same type | Inverse of age: `1,000,000 / (1 + ageSec)` |
-
-**Composite Score Formula:**
+I combine these two into a single score using this formula:
 
 ```
 score = typeWeight × 10,000,000 + recencyScore
 ```
 
-The large multiplier on `typeWeight` ensures that type always dominates over recency, while recency serves as the tie-breaker within the same type.
+The big multiplier on the type weight makes sure that a placement notification will always rank above a result or event, no matter how old it is. The recency score just acts as a tiebreaker within the same type.
 
-#### 2. Data Structure — Max-Heap (Priority Queue)
+For the recency part, I used `1,000,000 / (1 + age_in_seconds)` — this gives a high number for fresh notifications and it decays smoothly as the notification gets older.
 
-We use a **binary max-heap** to maintain and extract the top-N notifications efficiently.
+### Why I Used a Max-Heap
 
-**Why a heap?**
+For actually pulling out the top N notifications, I went with a max-heap (priority queue). The reason is efficiency — if we just sorted the whole array every time, that's O(n log n) each time. But with a heap, inserting a new notification is O(log n) and extracting the max is also O(log n). This matters because the problem says new notifications will keep coming in, so we need to handle updates efficiently without re-sorting everything from scratch.
 
-| Operation | Array Sort | Max-Heap |
-|-----------|-----------|----------|
-| Build from N items | O(n log n) | O(n) |
-| Extract top-K | O(k) after sort | O(k log n) |
-| Insert 1 new item | O(n log n) re-sort | O(log n) |
-| **Total for streaming** | **O(n log n)** per batch | **O(log n)** per insert |
+Here's a quick comparison:
 
-For a streaming scenario where new notifications arrive continuously, the heap lets us **insert in O(log n)** and **extract-max in O(log n)** without re-sorting the entire list.
+| What we're doing | Sorting everything | Using a heap |
+|---|---|---|
+| Process all notifications | O(n log n) | O(n) to build |
+| Get top 10 | O(1) after sort | O(10 × log n) |
+| Add 1 new notification | O(n log n) again | O(log n) |
 
-#### 3. Algorithm Steps
+So for streaming updates, the heap is clearly better.
 
-```
-1. Fetch all notifications from GET /evaluation-service/notifications
-2. For each notification:
-   a. Compute composite score = typeWeight × 10,000,000 + recencyScore
-   b. Insert into a max-heap
-3. Extract top-N from the heap
-4. Return ranked list
-```
+### How It Works Step by Step
 
-#### 4. Handling Streaming Updates
+1. Fetch all notifications from the API (`GET /evaluation-service/notifications`)
+2. For each notification, calculate its priority score
+3. Insert everything into a max-heap
+4. Extract the top N items from the heap
+5. Display them ranked
 
-When new notifications arrive, we **do not recompute from scratch**:
+When new notifications come in later, I don't rebuild the heap from scratch. I just merge the new ones into the existing top-N using the `mergeNewNotifications()` function, which combines old results with new data and re-extracts the top N. Much faster than starting over.
 
-```
-1. Merge new notifications into the existing heap
-2. Re-extract top-N from the merged heap
-```
-
-This is implemented in the `mergeNewNotifications()` function, which combines the existing top-N with new arrivals and re-ranks.
-
----
-
-### Code Structure
+### The Code Structure
 
 ```
 notification_app_be/
-├── index.js               # Entry point — fetches, ranks, displays
-├── priorityInbox.js       # Max-heap, scoring, top-N extraction
-├── notificationService.js # API client for notifications endpoint
+├── index.js               — entry point, fetches and displays top N
+├── priorityInbox.js       — the heap, scoring logic, and top-N extraction
+├── notificationService.js — calls the notifications API
 └── package.json
 ```
 
----
+You can run it with `node index.js` for top 10, or `node index.js 15` for top 15, etc.
 
-### Example Output
+### Sample Output
 
 ```
-🏫 Campus Notifications — Priority Inbox (Top 10)
+Campus Notifications — Priority Inbox (Top 10)
 
 Rank  Type        Score             Timestamp               Message
 #1    Placement   30000999.85       2026-04-22 17:51:18     CSX Corporation hiring
 #2    Result      20000998.32       2026-04-22 17:51:30     mid-sem
 #3    Event       10000997.10       2026-04-22 17:50:00     Tech Fest Registration
-...
 ```
 
----
+Placement always comes first because of the weight, and within placement notifications, the most recent one ranks higher.
 
-### Complexity Analysis
+### Tradeoffs I Considered
 
-| Metric | Value |
-|--------|-------|
-| **Time** — build heap from n notifications | O(n) |
-| **Time** — extract top-k | O(k log n) |
-| **Time** — insert new notification | O(log n) |
-| **Space** | O(n) for the heap |
-| **Overall for top-10 from 1000** | ~O(1000 + 10 × 10) ≈ O(n) |
-
----
-
-### Trade-offs & Design Decisions
-
-1. **Type weight dominance**: By using a 10M multiplier, Placement always outranks Result regardless of recency. This is intentional — a placement notification from last week is still more important than an event from 5 minutes ago.
-
-2. **Recency decay**: The formula `1M / (1 + ageSec)` provides a smooth decay curve. A notification from 1 second ago scores ~999,999 while one from 1 hour ago scores ~277.
-
-3. **No database required**: All computation is done in-memory from the API response, as per the constraints.
-
-4. **Configurable N**: The user can pass any value of N via command-line argument (`node index.js 15`).
+- I intentionally made type weight dominate over recency. A week-old placement notification is still more important than an event from 5 minutes ago. If the PM wanted a different balance, we could reduce the multiplier.
+- No database is used — everything is computed in-memory from the API response, which is fine for this stage.
+- The recency decay is smooth, not stepped. A notification from 1 second ago and one from 2 seconds ago will have very slightly different scores, which gives us a clean ordering without ties.
